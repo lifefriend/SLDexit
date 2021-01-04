@@ -25,15 +25,15 @@ var type = 'vector';//vector, raster, GeoJSON ++
 //add path for directory where all files you want to convert are placed
 var DIRECTORY_PATH = 'exampleMultipleLayers';
 
-parseAllFiles(DIRECTORY_PATH); //parse all files in given directory
+// parseAllFiles(DIRECTORY_PATH); //parse all files in given directory
 
 var SPECIFIC_FILE_PATH = 'exampleData/FKB_ElvBekk.xml'; //path of specific file
-//parse_sld_to_rules_tag(SPECIFIC_FILE_PATH); //Parse only one file
+parse_sld_to_rules_tag(SPECIFIC_FILE_PATH); //Parse only one file
 
 
 //-------------------------------------------------------------//
 
-var RESULT_PATH = ''; //Add path you want result files written to
+var RESULT_PATH = './'; //Add path you want result files written to
 
 var VALID_SYMBOLIZERS = [
   'LineSymbolizer',
@@ -223,14 +223,26 @@ function parse_sld_to_rules_tag(file) {
 function writeStartOfJSON() {
   var top = '{ "version": 7, "name": "' + styleSpecName + '", "sources": { "' + sourceName + '": { "type": "vector", "url": "' + sourceUrl + '" } }, "glyphs": "mapbox://fontstack/{fontstack}/{range}.pbf", "sprite": "https://www.mapbox.com/mapbox-gl-styles/sprites/sprite", "layers": [ { "id": "background", "type": "background", "paint": { "background-color": "rgb(237, 234, 235)" } }';
   //  var top = '{ "version": 7, "name": "MapboxGLStyle2", "sources": { "norkart": { "type": "vector", "url": "mapbox://andersob.3ukdquxr" } }, "glyphs": "mapbox://fontstack/{fontstack}/{range}.pbf", "sprite": "https://www.mapbox.com/mapbox-gl-styles/sprites/sprite", "layers": [ { "id": "background", "type": "background", "paint": { "background-color": "rgb(237, 234, 235)" } }';
-  fs.writeFile(RESULT_PATH + '\\Result.JSON', top + '\n');
-  fs.writeFile(RESULT_PATH + '\\errorFiles.txt', 'Files that could not be converted:' + '\n');
+  fs.writeFile(RESULT_PATH + '\\Result.JSON', top + '\n', function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+  fs.writeFile(RESULT_PATH + '\\errorFiles.txt', 'Files that could not be converted:' + '\n', function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
 }
 
 function writeEndOfJSON() {
   console.log('writing end of json');
   var end = ']}';
-  fs.appendFile(RESULT_PATH + '\\Result.JSON', end);
+  fs.appendFile(RESULT_PATH + '\\Result.JSON', end, function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
 }
 
 var parseFile = function (data, file) {
@@ -303,7 +315,11 @@ function writeJSON(symbTag, type, name, minzoom, maxzoom, file) {
     }
   } catch (err) {
     //writes a file with all the sld-files with errors
-    fs.appendFile(RESULT_PATH + '\\errorFiles.txt', file + '-' + name + '\n');
+    fs.appendFile(RESULT_PATH + '\\errorFiles.txt', file + '-' + name + '\n', function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
 }
 
